@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class TransactionService {
@@ -13,23 +14,24 @@ public class TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    public void saveTransaction(Transaction transaction) {
-        transactionRepository.save(transaction);
-    }
-
     public void processPayrollTransaction(double amount) {
         Transaction transaction = new Transaction();
+    //    transaction.setAmount(-amount); // Negative because it's an expense
         transaction.setTransactionDate(new Date());
-        transaction.setBalance(-amount); // Deduct from the balance
-        transaction.setTransactionMethod("payroll");
-        saveTransaction(transaction);
+        transaction.setTransactionMethod("Payroll");
+        transactionRepository.save(transaction);
     }
 
     public void processInvoiceTransaction(double amount) {
         Transaction transaction = new Transaction();
+      //  transaction.setAmount(amount); // Positive because it's an income
         transaction.setTransactionDate(new Date());
-        transaction.setBalance(amount); // Add to the balance
-        transaction.setTransactionMethod("invoice");
-        saveTransaction(transaction);
+        transaction.setTransactionMethod("Invoice");
+        transactionRepository.save(transaction);
+    }
+
+
+    public List<Transaction> getAllTransactions() {
+        return transactionRepository.findAll();
     }
 }
